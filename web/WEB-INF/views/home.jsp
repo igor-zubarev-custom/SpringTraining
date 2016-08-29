@@ -11,6 +11,7 @@
   <title>Title</title>
 </head>
 <body>
-HELLO!!!
+${phone.key}/br
+${phone.model}
 </body>
 </html>
