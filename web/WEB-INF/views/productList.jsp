@@ -13,9 +13,41 @@
 <head>
   <title>Product List</title>
 </head>
-<body>
-  Phones
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+  $(document).ready(function () {
+  <c:forEach var="product" items="${productList}" varStatus="number">
+    $('#productsForm_${product.id}').submit(function (event) {
+      var quantity = $('#quantity_${product.id}').val();
+      var id = $('#id_${product.id}').val();
+      var json = {"id" : id, "quantity" : quantity};
 
+      $.ajax({
+        url: $("#productsForm_${product.id}").attr("action"),
+        data: JSON.stringify(json),
+        type: "POST",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Content-Type", "application/json");
+        },
+        success: function () {
+          location.reload();
+        },
+        error: function () {
+          var content = "";
+          content += "<b>ERROR</b>";
+          $("#formMessage").html(content);
+        }
+      });
+      event.preventDefault();
+    });
+  </c:forEach>
+  });
+</script>
+<body>
+  <c:import url="header.jsp"/>
+  <div id="formMessage"></div>
+  Phones
   <table>
     <th>No</th>
     <th>Model</th>
@@ -31,9 +63,9 @@
         <td>${product.color}</td>
         <td>${product.displaySize}</td>
         <td>${product.price}</td>
-        <form:form action="addToCart" method="post" modelAttribute="orderItem">
-          <form:hidden path="phoneId" value =/>
-          <td><form:input path="quantity"/></td>
+        <form:form id = "productsForm_${product.id}" action="/addToCart">
+          <input type="hidden" id="id_${product.id}" value="${product.id}"/>
+          <td><input id="quantity_${product.id}" type="text"/></td>
           <td><input type="submit" value="Add to cart"></td>
         </form:form>
       </tr>

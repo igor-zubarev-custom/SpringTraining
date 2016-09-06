@@ -13,6 +13,7 @@
   <title>Product page</title>
 </head>
 <body>
+  <c:import url="header.jsp"/>
   <a href="/products">Return to product list</a><br>
   <b>${product.model}</b>
   <table>
