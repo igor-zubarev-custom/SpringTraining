@@ -8,15 +8,88 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
   <title>Product page</title>
+  <link rel="stylesheet" type="text/css" href="/resources/css/style.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#productsForm_${product.id}').submit(function (event) {
+        var quantity = $('#quantity_${product.id}').val();
+        var id = $('#id_${product.id}').val();
+        var json = {"id" : id, "quantity" : quantity};
+
+        $('.success').empty();
+        $('.error').empty();
+        $('.success').removeClass('success');
+        $('.error').removeClass('error');
+
+        $.ajax({
+          url: $("#productsForm_${product.id}").attr("action"),
+          data: JSON.stringify(json),
+          type: "POST",
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+          },
+          success: function (response) {
+            var messages = response.messageList;
+            var responseInfo = "";
+            if(response.status == "SUCCESS"){
+              for(i = 0; i < messages.length; i++){
+                responseInfo += messages[i] + ". ";
+              }
+              $('#quantity_${product.id}').val('1');
+              $('#info').addClass('success');
+              $('#info').html(responseInfo);
+              getCartInfo();
+            }else {
+              for(i = 0; i < messages.length; i++){
+                responseInfo += messages[i].defaultMessage + ". ";
+              }
+              $('#quantity_${product.id}').val('1');
+              $('#info').addClass('error');
+              $('#info').html(responseInfo);
+            }
+            //location.reload();
+          },
+          error: function () {
+            var responseInfo = "INPUT ERROR";
+            $('#quantity_${product.id}').val('1');
+            $('#info').addClass('error');
+            $('#info').html(responseInfo);
+          }
+        });
+        event.preventDefault();
+      });
+    });
+
+    function getCartInfo() {
+      $.ajax({
+        type: "GET",
+        url: "/cartInfo",
+        dataType: "json",
+        success: function (response) {
+          $('.cartMini').empty();
+          $('.cartMini').html('My cart: ' + response.quantity + ' items, ' + response.price + '$');
+        }
+      })
+    }
+  </script>
 </head>
 <body>
   <c:import url="header.jsp"/>
-  <a href="/products">Return to product list</a><br>
-  <b>${product.model}</b>
+
+  <div class="navigation">
+    <div class="btn1"><a href="/products">Return to products</a></div>
+  </div>
+  <div class="productTable2">
   <table>
+    <tr>
+      <td>Model</td><td><b>${product.model}</b></td>
+    </tr>
     <tr>
       <td>Display</td><td>${product.displaySize}</td>
     </tr>
@@ -35,7 +108,15 @@
     <tr>
       <td>Camera</td><td>${product.camera}</td>
     </tr>
+    <tr>
+    <form:form id = "productsForm_${product.id}" action="/addToCart">
+      <input type="hidden" id="id_${product.id}" value="${product.id}"/>
+      <td><input id="quantity_${product.id}" type="text" value="1"/></td>
+      <td><input type="submit" value="Add to cart"></td>
+    </form:form>
+    </tr>
   </table>
-
+  </div>
+  <div id="info"></div>
 </body>
 </html>

@@ -11,7 +11,6 @@
   <title>Title</title>
 </head>
 <body>
-${phone.key}/br
-${phone.model}
+  <a href="/products">Product list</a>
 </body>
 </html>

@@ -10,20 +10,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
-<style type="text/css">
-  .cart{
-    float:right;
-    padding: 10px;
-    padding-left: 15px;
-    margin: 10px;
-    border: 1px solid gray;
-    border-radius: 10px;
-    background: #E6DEEA;
-  }
-  .phone_img{
-    float: left;
-  }
-</style>
+  <link rel="stylesheet" type="text/css" href="/resources/css/style.css">
   <jsp:useBean id="orderService" scope="page" class="home.zubarev.service.OrderService">
     <jsp:setProperty name="orderService" property="order" value="${order}"/>
   </jsp:useBean>
@@ -32,9 +19,11 @@
     <div class="phone_img">
       <img src="/resources/img/phone.png">
     </div>
-    <div class="cart">
+    <a href="/cart">
+    <div class="cartMini">
      My cart: ${orderService.allItems} items, ${orderService.orderPrice}$
     </div>
+    </a>
   </div>
   <div style="clear: both">
     <hr>

@@ -1,0 +1,78 @@
+.cartMini{
+    float:right;
+    padding: 10px;
+    padding-left: 15px;
+    margin: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background: #E6DEEA;
+}
+.btn1{
+    float:left;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background: #E6DEEA;
+}
+.btn2{
+    float:right;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background: #E6DEEA;
+}
+input[type=submit] {
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background: #E6DEEA;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+
+}
+
+.navigation {
+    width: 50%;
+    float: left;
+}
+.phone_img{
+    float: left;
+}
+.error {
+    color: red; font-weight: bold;
+}
+.success {
+    color: green; font-weight: bold;
+}
+.productTable {
+    width: 50%;
+}
+.productTable2 {
+    width: 20%;
+}
+table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+th {
+    height: 50px;
+    padding: 15px;
+    border: 2px solid #44535d;
+    background-color: #cbcbcb;
+}
+td {
+    padding: 15px;
+    border: 2px solid #8f9eac;
+}
+tr {
+    height: 50px;
+  }
+tr:hover {
+    background-color: #ebebeb
+}
+tr:nth-child(even) {
+    background-color: #ebebeb
+}

@@ -1,14 +1,19 @@
 package home.zubarev.service;
 
+import home.zubarev.model.formdata.CartFormData;
 import home.zubarev.model.Order;
 import home.zubarev.model.OrderItem;
+import home.zubarev.model.dto.OrderItemDTO;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Igor Zubarev on 06.09.2016.
  */
+@Service
 public class OrderService {
     Order order;
 
@@ -23,7 +28,6 @@ public class OrderService {
     public Long getAllItems(){
         Order order = getOrder();
         Long quantity = 0L;
-        System.out.println(order);
         if (order != null){
             List<OrderItem> orderItems = order.getOrderItems();
             if (orderItems != null){
@@ -37,10 +41,14 @@ public class OrderService {
         return quantity;
     }
 
+    public Long getAllItems(Order order){
+        setOrder(order);
+        return getAllItems();
+    }
+
     public BigDecimal getOrderPrice(){
         Order order = getOrder();
         BigDecimal orderPrice = BigDecimal.ZERO;
-        System.out.println(order);
         if (order != null){
             List<OrderItem> orderItems = order.getOrderItems();
             if (orderItems != null){
@@ -54,5 +62,54 @@ public class OrderService {
             return orderPrice;
         }
         return orderPrice;
+    }
+
+    public BigDecimal getOrderPrice(Order order){
+        setOrder(order);
+        return getOrderPrice();
+    }
+
+    public boolean deleteOrderItem(Order order, Long id){
+        List<OrderItem> orderItems = order.getOrderItems();
+        for (int i = 0; i < orderItems.size(); i++) {
+            if (orderItems.get(i).getId() == id){
+                orderItems.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addOrderItem(Order order, OrderItem orderItem){
+        List<OrderItem> orderItems = order.getOrderItems();
+        if (orderItems != null){
+            orderItems.add(orderItem);
+        }else {
+            orderItems = new ArrayList<>();
+            orderItems.add(orderItem);
+            order.setOrderItems(orderItems);
+        }
+    }
+
+    public void updateOrder(Order order, CartFormData cartFormData){
+        if (order != null) {
+            List<OrderItem> orderItems = new ArrayList<>();
+            for (OrderItemDTO orderItemDTO : cartFormData.getOrderItemDTOs()) {
+                Long id = orderItemDTO.getId();
+                Long quantity = orderItemDTO.getQuantity();
+                if (id != null && quantity != null) {
+                    for (OrderItem orderItem : order.getOrderItems()) {
+                        if (orderItem.getId() == id) {
+                            if (quantity != 0) {
+                                orderItem.setQuantity(quantity);
+                                orderItems.add(orderItem);
+                            }
+                        }
+                    }
+
+                }
+            }
+            order.setOrderItems(orderItems);
+        }
     }
 }

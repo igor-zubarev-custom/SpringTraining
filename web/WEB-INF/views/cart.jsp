@@ -16,11 +16,10 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script>
     $(document).ready(function () {
-      <c:forEach var="product" items="${productList}" varStatus="number">
-      $('#productsForm_${product.id}').submit(function (event) {
-        var quantity = $('#quantity_${product.id}').val();
-        var id = $('#id_${product.id}').val();
-        var json = {"id" : id, "quantity" : quantity};
+      <c:forEach var="orderItem" items="${order.orderItems}" varStatus="number">
+      $('#orderItemForm_${orderItem.id}').submit(function (event) {
+        var id = $('#id_${orderItem.id}').val();
+        var json = {"id" : id};
 
         $('.success').empty();
         $('.error').empty();
@@ -28,7 +27,7 @@
         $('.error').removeClass('error');
 
         $.ajax({
-          url: $("#productsForm_${product.id}").attr("action"),
+          url: $("#orderItemForm_${orderItem.id}").attr("action"),
           data: JSON.stringify(json),
           type: "POST",
           beforeSend: function (xhr) {
@@ -42,22 +41,23 @@
               for(i = 0; i < messages.length; i++){
                 responseInfo += messages[i] + ". ";
               }
-              $('#quantity_${product.id}').val('1');
+              //$('#quantity_${product.id}').val('');
               $('#info').addClass('success');
               $('#info').html(responseInfo);
+              $('#row_${orderItem.id}').remove();
               getCartInfo();
             }else {
               for(i = 0; i < messages.length; i++){
-                responseInfo += messages[i].defaultMessage + ". ";
+                responseInfo += messages[i] + ". ";
               }
-              $('#quantity_${product.id}').val('1');
+              //$('#quantity_${product.id}').val('');
               $('#info').addClass('error');
               $('#info').html(responseInfo);
             }
+            //location.reload();
           },
           error: function () {
             var responseInfo = "INPUT ERROR";
-            $('#quantity_${product.id}').val('1');
             $('#info').addClass('error');
             $('#info').html(responseInfo);
           }
@@ -82,34 +82,51 @@
 </head>
 
 <body>
-  <c:import url="header.jsp"/>
-  <h1>Phones</h1>
-  <div id="info"></div>
-  <div class="navigation">
-    <div class="btn1"><a href="/cart">Cart</a></div>
-  </div>
-  <div class="productTable">
-  <table>
-    <th>Model</th>
-    <th>Color</th>
-    <th>Display size</th>
-    <th>Price</th>
-    <th>Quantity</th>
-    <th>Action</th>
-    <c:forEach var="product" items="${productList}" varStatus="number">
-      <tr>
-        <td><a href="/product?id=${product.id}">${product.model}</a></td>
-        <td>${product.color}</td>
-        <td>${product.displaySize}</td>
-        <td>${product.price}</td>
-        <form:form id = "productsForm_${product.id}" action="/addToCart">
-          <input type="hidden" id="id_${product.id}" value="${product.id}"/>
-          <td><input id="quantity_${product.id}" type="text" value="1"/></td>
-          <td><input type="submit" value="Add to cart"></td>
-        </form:form>
-      </tr>
-    </c:forEach>
-  </table>
-  </div>
+<c:import url="header.jsp"/>
+<h1>Cart</h1>
+<c:choose>
+<c:when test="${order.orderItems.size() != 0 && order != null}">
+<div id="info"></div>
+<div class="navigation">
+  <div class="btn1"><a href="/products">Return to products</a></div>
+  <div class="btn2"><a href="/order">Order</a></div>
+</div>
+<div class="productTable">
+<table>
+  <th>Model</th>
+  <th>Color</th>
+  <th>Display size</th>
+  <th>Price</th>
+  <th>Quantity</th>
+  <th>Action</th>
+  <c:forEach var="orderItem" items="${order.orderItems}" varStatus="number">
+    <tr id="row_${orderItem.id}">
+      <td>${orderItem.phone.model}</td>
+      <td>${orderItem.phone.color}</td>
+      <td>${orderItem.phone.displaySize}</td>
+      <td>${orderItem.phone.price}</td>
+      <td><input name="orderItemDTOs[${number.index}].quantity" type="text" value="${orderItem.quantity}" form="cartForm"/></td>
+      <input type="hidden" name="orderItemDTOs[${number.index}].id" value="${orderItem.id}" form="cartForm"/>
+      <form:form id ="orderItemForm_${orderItem.id}" action="/deleteFromCart">
+        <input type="hidden" id="id_${orderItem.id}" value="${orderItem.id}"/>
+        <td><input type="submit" value="Delete" form="orderItemForm_${orderItem.id}"></td>
+      </form:form>
+    </tr>
+  </c:forEach>
+</table>
+</div>
+<div class="navigation">
+  <div class="error">${errorMessage}</div>
+  <div class="btn2"><a href="/order">Order</a></div>
+  <form:form id="cartForm" method="post" action="/updateCart" modelAttribute="cartFormData">
+    <input type="submit" value="Update" form="cartForm" style="float: right; margin: 10px; padding: 10px;">
+  </form:form>
+</div>
+</c:when>
+<c:otherwise>
+    <div class="btn1"><a href="/products">Return to products</a></div><br>
+  Cart is empty!
+</c:otherwise>
+</c:choose>
 </body>
 </html>
