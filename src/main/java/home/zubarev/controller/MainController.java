@@ -25,6 +25,19 @@ import java.util.List;
 
 /**
  * Created by Igor Zubarev on 29.08.2016.
+ *
+ * TODO: every page must go to a separate controller
+ * The following controllers names are standard for ecommerce:
+ * ProductListController
+ * ProductDetailsController
+ * CartController
+ * OrderController
+ * OrderConfirmationController
+ *
+ * Most of the time a customer works with a cart. Cart is stored in HTTP serssion.
+ * During order placement a cart is transformed into an Order and persisted into the DB.
+ *
+ * Rename all the classes according to this rules please.
  */
 @Controller
 @SessionAttributes("order")
@@ -40,6 +53,7 @@ public class MainController {
     public static final String ERROR = "ERROR";
 
     @RequestMapping(value = "/")
+    // no need to return ModelAndView here, can return just string. It will be view name
     public ModelAndView home(ModelAndView model){
         model.setViewName("home");
         return model;
@@ -58,7 +72,8 @@ public class MainController {
         return model;
     }
 
-    @RequestMapping(value = "/product")
+    // TODO: pass productId inside URL to make links bookmarkable
+    @RequestMapping(value = "/product/{id}")
     public ModelAndView product (@RequestParam Long id){
         Phone product = phoneDao.get(id);
         ModelAndView model = new ModelAndView();
@@ -86,6 +101,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
+    // TODO: move cart calculation to a service
     public @ResponseBody
     FormResponse addToCart(@Valid @RequestBody ProductFormData productFormData, BindingResult bindingResult, HttpServletRequest httpServletRequest){
         FormResponse response = new FormResponse();
@@ -172,6 +188,7 @@ public class MainController {
             for (ObjectError objectError :bindingResult.getAllErrors()) {
                 errors += objectError.getDefaultMessage() + "; ";
             }
+            // TODO: remove this. Use spring tags to render binding result errors
             model.addObject("errorMessage", errors);
             return model;
         }
