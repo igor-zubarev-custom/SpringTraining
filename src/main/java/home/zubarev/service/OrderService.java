@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Service
 public class OrderService {
+    // multiple app users share the same order
     Order order;
 
     public Order getOrder() {

@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Created by Igor Zubarev on 19.09.2016.
+ * TODO: separate model from web stuff
+ * I propose to move this class to home.zubarev.web.formdata package
  */
 public class CartFormData {
     private List<OrderItemDTO> orderItemDTOs;
