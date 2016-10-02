@@ -1,8 +1,8 @@
-package home.zubarev.model.validation;
+package home.zubarev.web.validation;
 
 import home.zubarev.model.dto.OrderItemDTO;
-import home.zubarev.model.formdata.CartFormData;
-import home.zubarev.model.formdata.ProductFormData;
+import home.zubarev.web.formdata.CartFormData;
+import home.zubarev.web.formdata.ProductFormData;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

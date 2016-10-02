@@ -98,7 +98,7 @@
     <th>Action</th>
     <c:forEach var="product" items="${productList}" varStatus="number">
       <tr>
-        <td><a href="/product?id=${product.id}">${product.model}</a></td>
+        <td><a href="/product/${product.id}">${product.model}</a></td>
         <td>${product.color}</td>
         <td>${product.displaySize}</td>
         <td>${product.price}</td>

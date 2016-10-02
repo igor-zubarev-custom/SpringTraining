@@ -1,6 +1,6 @@
 package home.zubarev.service;
 
-import home.zubarev.model.formdata.CartFormData;
+import home.zubarev.web.formdata.CartFormData;
 import home.zubarev.model.Order;
 import home.zubarev.model.OrderItem;
 import home.zubarev.model.dto.OrderItemDTO;

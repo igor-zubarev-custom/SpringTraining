@@ -3,17 +3,16 @@ package home.zubarev.controller;
 import home.zubarev.dao.PhoneDao;
 import home.zubarev.model.*;
 import home.zubarev.model.dto.OrderItemIdDTO;
-import home.zubarev.model.formdata.CartFormData;
-import home.zubarev.model.formdata.CartInfo;
-import home.zubarev.model.formdata.FormResponse;
-import home.zubarev.model.formdata.ProductFormData;
-import home.zubarev.model.validation.CartFormValidator;
+import home.zubarev.web.formdata.CartFormData;
+import home.zubarev.web.formdata.CartInfo;
+import home.zubarev.web.formdata.FormResponse;
+import home.zubarev.web.formdata.ProductFormData;
+import home.zubarev.web.validation.CartFormValidator;
 import home.zubarev.service.IdGenerator;
 import home.zubarev.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Created by Igor Zubarev on 29.08.2016.
  *
- * TODO: every page must go to a separate controller
+ * TODO: every page must go to a separate controller (?)
  * The following controllers names are standard for ecommerce:
  * ProductListController
  * ProductDetailsController
@@ -54,9 +53,8 @@ public class MainController {
 
     @RequestMapping(value = "/")
     // no need to return ModelAndView here, can return just string. It will be view name
-    public ModelAndView home(ModelAndView model){
-        model.setViewName("home");
-        return model;
+    public String home(){
+        return "home";
     }
     @RequestMapping(value = "/products")
     public ModelAndView productList (ModelAndView model){
@@ -72,9 +70,9 @@ public class MainController {
         return model;
     }
 
-    // TODO: pass productId inside URL to make links bookmarkable
+    // TODO: pass productId inside URL to make links bookmarkable (+)
     @RequestMapping(value = "/product/{id}")
-    public ModelAndView product (@RequestParam Long id){
+    public ModelAndView product (@PathVariable("id") Long id){
         Phone product = phoneDao.get(id);
         ModelAndView model = new ModelAndView();
         model.addObject("product", product);
@@ -101,7 +99,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
-    // TODO: move cart calculation to a service
+    // TODO: move cart calculation to a service (?)
     public @ResponseBody
     FormResponse addToCart(@Valid @RequestBody ProductFormData productFormData, BindingResult bindingResult, HttpServletRequest httpServletRequest){
         FormResponse response = new FormResponse();
@@ -179,17 +177,18 @@ public class MainController {
             return model;
         }
 
+        // TODO: how to validate quantity before CartFormData will be created ???
         cartFormValidator.validate(cartFormData, bindingResult);
 
         if (bindingResult.hasErrors()){
             ModelAndView model = new ModelAndView();
             model.setViewName("cart");
-            String errors = "";
-            for (ObjectError objectError :bindingResult.getAllErrors()) {
-                errors += objectError.getDefaultMessage() + "; ";
-            }
-            // TODO: remove this. Use spring tags to render binding result errors
-            model.addObject("errorMessage", errors);
+//            String errors = "";
+//            for (ObjectError objectError :bindingResult.getAllErrors()) {
+//                errors += objectError.getDefaultMessage() + "; ";
+//            }
+            // TODO: remove this. Use spring tags to render binding result errors (+)
+//            model.addObject("errorMessage", errors);
             return model;
         }
         Order order = (Order)httpServletRequest.getSession().getAttribute("order");

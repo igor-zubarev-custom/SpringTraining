@@ -1,4 +1,4 @@
-package home.zubarev.model.formdata;
+package home.zubarev.web.formdata;
 
 import java.math.BigDecimal;
 

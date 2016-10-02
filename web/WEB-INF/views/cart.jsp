@@ -9,6 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <html>
 <head>
   <title>Product List</title>
@@ -116,7 +117,13 @@
 </table>
 </div>
 <div class="navigation">
-  <div class="error">${errorMessage}</div>
+  <spring:hasBindErrors name="cartFormData">
+    <c:forEach var="error" items="${errors.allErrors}">
+      <b><spring:message message="${error}" /></b>
+      <br/>
+    </c:forEach>
+  </spring:hasBindErrors>
+  <%--<div class="error">${errorMessage}</div>--%>
   <div class="btn2"><a href="/order">Order</a></div>
   <form:form id="cartForm" method="post" action="/updateCart" modelAttribute="cartFormData">
     <input type="submit" value="Update" form="cartForm" style="float: right; margin: 10px; padding: 10px;">
