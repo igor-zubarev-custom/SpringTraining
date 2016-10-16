@@ -3,12 +3,9 @@ package home.zubarev.model;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Created by Igor Zubarev on 29.08.2016.
- */
-public class Order {
+public class Cart {
     private Long id;
-    private List<OrderItem> orderItems;
+    private List<CartItem> cartItems;
     private BigDecimal totalPrice;
     private String firstName;
     private String lastName;
@@ -21,11 +18,11 @@ public class Order {
     public void setId(Long id) {
         this.id = id;
     }
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
+    public List<CartItem> getCartItems() {
+        return cartItems;
     }
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
     public BigDecimal getTotalPrice() {
         return totalPrice;
@@ -58,11 +55,11 @@ public class Order {
         this.contactPhone = contactPhone;
     }
 
-    public Order() {
+    public Cart() {
     }
 
-    public Order(List<OrderItem> orderItems, BigDecimal totalPrice, String firstName, String lastName, String deliveryAddress, String contactPhone) {
-        this.orderItems = orderItems;
+    public Cart(List<CartItem> cartItems, BigDecimal totalPrice, String firstName, String lastName, String deliveryAddress, String contactPhone) {
+        this.cartItems = cartItems;
         this.totalPrice = totalPrice;
         this.firstName = firstName;
         this.lastName = lastName;

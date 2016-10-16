@@ -1,11 +1,8 @@
-package home.zubarev.model.dto;
+package home.zubarev.web.dto;
 
 import javax.validation.constraints.NotNull;
 
-/**
- * Created by Igor Zubarev on 19.09.2016.
- */
-public class OrderItemIdDTO {
+public class CartItemIdDTO {
     @NotNull(message = "The ID must be specified")
     private Long id;
 

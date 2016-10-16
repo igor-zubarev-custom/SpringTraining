@@ -17,52 +17,12 @@
   <script>
     $(document).ready(function () {
       $('#productsForm_${product.id}').submit(function (event) {
+        event.preventDefault();
         var quantity = $('#quantity_${product.id}').val();
         var id = $('#id_${product.id}').val();
         var json = {"id" : id, "quantity" : quantity};
-
-        $('.success').empty();
-        $('.error').empty();
-        $('.success').removeClass('success');
-        $('.error').removeClass('error');
-
-        $.ajax({
-          url: $("#productsForm_${product.id}").attr("action"),
-          data: JSON.stringify(json),
-          type: "POST",
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Content-Type", "application/json");
-          },
-          success: function (response) {
-            var messages = response.messageList;
-            var responseInfo = "";
-            if(response.status == "SUCCESS"){
-              for(i = 0; i < messages.length; i++){
-                responseInfo += messages[i] + ". ";
-              }
-              $('#quantity_${product.id}').val('1');
-              $('#info').addClass('success');
-              $('#info').html(responseInfo);
-              getCartInfo();
-            }else {
-              for(i = 0; i < messages.length; i++){
-                responseInfo += messages[i].defaultMessage + ". ";
-              }
-              $('#quantity_${product.id}').val('1');
-              $('#info').addClass('error');
-              $('#info').html(responseInfo);
-            }
-            //location.reload();
-          },
-          error: function () {
-            var responseInfo = "INPUT ERROR";
-            $('#quantity_${product.id}').val('1');
-            $('#info').addClass('error');
-            $('#info').html(responseInfo);
-          }
-        });
-        event.preventDefault();
+        var url = $("#productsForm_${product.id}").attr("action");
+        sendJson(id, quantity, url);
       });
     });
 
@@ -76,6 +36,47 @@
           $('.cartMini').html('My cart: ' + response.quantity + ' items, ' + response.price + '$');
         }
       })
+    }
+
+    function sendJson(id, quantity, url) {
+      var json = {"id" : id, "quantity" : quantity};
+
+      $('.success').empty();
+      $('.error').empty();
+      $('.success').removeClass('success');
+      $('.error').removeClass('error');
+
+      $.ajax({
+        url: url,
+        data: JSON.stringify(json),
+        type: "POST",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Content-Type", "application/json");
+        },
+        success: function (response) {
+          var messages = response.messageList;
+          var responseInfo = "";
+          for(i = 0; i < messages.length; i++){
+            responseInfo += messages[i] + ". ";
+          }
+          $('#quantity_' + id).val('1');
+          $('#info').addClass('success');
+          $('#info').html(responseInfo);
+          getCartInfo();
+        },
+        error: function (xhr) {
+          var response = $.parseJSON(xhr.responseText);
+          var messages = response.messageList;
+          var responseInfo = "";
+          for(i = 0; i < messages.length; i++){
+            responseInfo += messages[i].defaultMessage + ". ";
+          }
+          $('#quantity_' + id).val(quantity);
+          $('#info').addClass('error');
+          $('#info').html(responseInfo);
+        }
+      });
     }
   </script>
 </head>

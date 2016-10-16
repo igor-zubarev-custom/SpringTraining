@@ -12,9 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Igor Zubarev on 29.08.2016.
- */
 @Component
 public class PhoneDaoImpl implements PhoneDao {
 

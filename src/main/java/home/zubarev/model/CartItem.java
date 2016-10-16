@@ -1,9 +1,6 @@
 package home.zubarev.model;
 
-/**
- * Created by Igor Zubarev on 29.08.2016.
- */
-public class OrderItem {
+public class CartItem {
     private Long id;
     private Phone phone;
     private Long quantity;
@@ -27,10 +24,10 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public OrderItem() {
+    public CartItem() {
     }
 
-    public OrderItem(Phone phone, Long quantity) {
+    public CartItem(Phone phone, Long quantity) {
         this.phone = phone;
         this.quantity = quantity;
     }

@@ -1,22 +1,19 @@
 package home.zubarev.web.formdata;
 
-import home.zubarev.model.dto.OrderItemDTO;
+import home.zubarev.web.dto.CartItemDTO;
 
+import javax.validation.Valid;
 import java.util.List;
 
-/**
- * Created by Igor Zubarev on 19.09.2016.
- * TODO: separate model from web stuff (+)
- * I propose to move this class to home.zubarev.web.formdata package
- */
 public class CartFormData {
-    private List<OrderItemDTO> orderItemDTOs;
+    @Valid
+    private List<CartItemDTO> cartItemDTOs;
 
-    public List<OrderItemDTO> getOrderItemDTOs() {
-        return orderItemDTOs;
+    public List<CartItemDTO> getCartItemDTOs() {
+        return cartItemDTOs;
     }
 
-    public void setOrderItemDTOs(List<OrderItemDTO> orderItemDTOs) {
-        this.orderItemDTOs = orderItemDTOs;
+    public void setCartItemDTOs(List<CartItemDTO> cartItemDTOs) {
+        this.cartItemDTOs = cartItemDTOs;
     }
 }

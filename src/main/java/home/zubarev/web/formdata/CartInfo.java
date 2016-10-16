@@ -2,9 +2,6 @@ package home.zubarev.web.formdata;
 
 import java.math.BigDecimal;
 
-/**
- * Created by Igor Zubarev on 13.09.2016.
- */
 public class CartInfo {
     private Long quantity;
     private BigDecimal price;

@@ -11,8 +11,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
   <link rel="stylesheet" type="text/css" href="/resources/css/style.css">
-  <jsp:useBean id="orderService" scope="page" class="home.zubarev.service.OrderService">
-    <jsp:setProperty name="orderService" property="order" value="${order}"/>
+  <jsp:useBean id="orderService" scope="page" class="home.zubarev.service.CartService">
+    <jsp:setProperty name="orderService" property="cart" value="${cart}"/>
   </jsp:useBean>
 
   <div>

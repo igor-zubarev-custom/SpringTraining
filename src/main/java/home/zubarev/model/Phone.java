@@ -2,9 +2,6 @@ package home.zubarev.model;
 
 import java.math.BigDecimal;
 
-/**
- * Created by Igor Zubarev on 29.08.2016.
- */
 public class Phone {
     private Long id;
     private String model;

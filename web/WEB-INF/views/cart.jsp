@@ -17,53 +17,12 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script>
     $(document).ready(function () {
-      <c:forEach var="orderItem" items="${order.orderItems}" varStatus="number">
-      $('#orderItemForm_${orderItem.id}').submit(function (event) {
-        var id = $('#id_${orderItem.id}').val();
-        var json = {"id" : id};
-
-        $('.success').empty();
-        $('.error').empty();
-        $('.success').removeClass('success');
-        $('.error').removeClass('error');
-
-        $.ajax({
-          url: $("#orderItemForm_${orderItem.id}").attr("action"),
-          data: JSON.stringify(json),
-          type: "POST",
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Content-Type", "application/json");
-          },
-          success: function (response) {
-            var messages = response.messageList;
-            var responseInfo = "";
-            if(response.status == "SUCCESS"){
-              for(i = 0; i < messages.length; i++){
-                responseInfo += messages[i] + ". ";
-              }
-              //$('#quantity_${product.id}').val('');
-              $('#info').addClass('success');
-              $('#info').html(responseInfo);
-              $('#row_${orderItem.id}').remove();
-              getCartInfo();
-            }else {
-              for(i = 0; i < messages.length; i++){
-                responseInfo += messages[i] + ". ";
-              }
-              //$('#quantity_${product.id}').val('');
-              $('#info').addClass('error');
-              $('#info').html(responseInfo);
-            }
-            //location.reload();
-          },
-          error: function () {
-            var responseInfo = "INPUT ERROR";
-            $('#info').addClass('error');
-            $('#info').html(responseInfo);
-          }
-        });
+      <c:forEach var="cartItem" items="${cart.cartItems}" varStatus="number">
+      $('#cartItemForm_${cartItem.id}').submit(function (event) {
         event.preventDefault();
+        var id = $('#id_${cartItem.id}').val();
+        var url = $("#cartItemForm_${cartItem.id}").attr("action");
+        sendJson(id, url);
       });
       </c:forEach>
     });
@@ -79,6 +38,53 @@
         }
       })
     }
+    
+    function sendJson(id, url) {
+      var json = {"id" : id};
+
+      $('.success').empty();
+      $('.error').empty();
+      $('.success').removeClass('success');
+      $('.error').removeClass('error');
+
+      $.ajax({
+        url: url,
+        data: JSON.stringify(json),
+        type: "POST",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Content-Type", "application/json");
+        },
+        success: function (response) {
+          var messages = response.messageList;
+          var responseInfo = "";
+          for(i = 0; i < messages.length; i++){
+            responseInfo += messages[i] + ". ";
+          }
+          $('#info').addClass('success');
+          $('#info').html(responseInfo);
+          $('#row_' + id).remove();
+          getCartInfo();
+        },
+        error: function (xhr) {
+          var response = $.parseJSON(xhr.responseText);
+          var messages = response.messageList;
+          var responseInfo = "";
+          if (xhr.status = 400){
+            for(i = 0; i < messages.length; i++){
+              responseInfo += messages[i] + ". ";
+            }
+          };
+          if (xhr.status = 406){
+            for(i = 0; i < messages.length; i++){
+              responseInfo += messages[i].defaultMessage + ". ";
+            }
+          };
+          $('#info').addClass('error');
+          $('#info').html(responseInfo);
+        }
+      });
+    }
   </script>
 </head>
 
@@ -86,11 +92,11 @@
 <c:import url="header.jsp"/>
 <h1>Cart</h1>
 <c:choose>
-<c:when test="${order.orderItems.size() != 0 && order != null}">
+<c:when test="${cart.cartItems.size() != 0 && cart != null}">
 <div id="info"></div>
 <div class="navigation">
   <div class="btn1"><a href="/products">Return to products</a></div>
-  <div class="btn2"><a href="/order">Order</a></div>
+  <div class="btn2"><a href="/cart">Order</a></div>
 </div>
 <div class="productTable">
 <table>
@@ -100,17 +106,17 @@
   <th>Price</th>
   <th>Quantity</th>
   <th>Action</th>
-  <c:forEach var="orderItem" items="${order.orderItems}" varStatus="number">
-    <tr id="row_${orderItem.id}">
-      <td>${orderItem.phone.model}</td>
-      <td>${orderItem.phone.color}</td>
-      <td>${orderItem.phone.displaySize}</td>
-      <td>${orderItem.phone.price}</td>
-      <td><input name="orderItemDTOs[${number.index}].quantity" type="text" value="${orderItem.quantity}" form="cartForm"/></td>
-      <input type="hidden" name="orderItemDTOs[${number.index}].id" value="${orderItem.id}" form="cartForm"/>
-      <form:form id ="orderItemForm_${orderItem.id}" action="/deleteFromCart">
-        <input type="hidden" id="id_${orderItem.id}" value="${orderItem.id}"/>
-        <td><input type="submit" value="Delete" form="orderItemForm_${orderItem.id}"></td>
+  <c:forEach var="cartItem" items="${cart.cartItems}" varStatus="number">
+    <tr id="row_${cartItem.id}">
+      <td>${cartItem.phone.model}</td>
+      <td>${cartItem.phone.color}</td>
+      <td>${cartItem.phone.displaySize}</td>
+      <td>${cartItem.phone.price}</td>
+      <td><input name="cartItemDTOs[${number.index}].quantity" type="text" value="${cartItem.quantity}" form="cartForm"/></td>
+      <input type="hidden" name="cartItemDTOs[${number.index}].id" value="${cartItem.id}" form="cartForm"/>
+      <form:form id ="cartItemForm_${cartItem.id}" action="/deleteFromCart">
+        <input type="hidden" id="id_${cartItem.id}" value="${cartItem.id}"/>
+        <td><input type="submit" value="Delete" form="cartItemForm_${cartItem.id}"></td>
       </form:form>
     </tr>
   </c:forEach>
@@ -123,8 +129,7 @@
       <br/>
     </c:forEach>
   </spring:hasBindErrors>
-  <%--<div class="error">${errorMessage}</div>--%>
-  <div class="btn2"><a href="/order">Order</a></div>
+  <div class="btn2"><a href="/cart">Order</a></div>
   <form:form id="cartForm" method="post" action="/updateCart" modelAttribute="cartFormData">
     <input type="submit" value="Update" form="cartForm" style="float: right; margin: 10px; padding: 10px;">
   </form:form>
