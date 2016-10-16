@@ -8,7 +8,6 @@ import home.zubarev.web.formdata.CartFormData;
 import home.zubarev.web.formdata.CartInfo;
 import home.zubarev.web.formdata.FormResponse;
 import home.zubarev.web.formdata.ProductFormData;
-import home.zubarev.web.validation.CartFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
@@ -27,8 +26,6 @@ import java.util.List;
 public class CartController {
     @Autowired
     CartService cartService;
-    @Autowired
-    CartFormValidator cartFormValidator;
 
     @RequestMapping(value = "/cart")
     public ModelAndView cart (ModelAndView model){
