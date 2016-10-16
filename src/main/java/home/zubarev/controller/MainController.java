@@ -4,20 +4,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 /**
- * Created by Igor Zubarev on 29.08.2016.
- *
- * TODO: every page must go to a separate controller (?)
- * The following controllers names are standard for ecommerce:
- * ProductListController
- * ProductDetailsController
- * CartController
- * OrderController
- * OrderConfirmationController
- *
- * Most of the time a customer works with a cart. Cart is stored in HTTP serssion.
- * During order placement a cart is transformed into an Cart and persisted into the DB.
- *
- * Rename all the classes according to this rules please.
  * TODO:
  * +1) SPLIT Main controller
  * 2) multimodule project
