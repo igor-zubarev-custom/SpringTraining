@@ -15,6 +15,7 @@ import java.util.List;
 @Component
 public class PhoneDaoImpl implements PhoneDao {
 
+    // osa: spring JDBC template
     @Autowired
     private DataSource dataSource;
 
@@ -77,6 +78,7 @@ public class PhoneDaoImpl implements PhoneDao {
             List<Phone> resultList = new ArrayList<>();
             while (resultSet.next()){
                 Phone phone = new Phone(
+                        // osa: code duplication
                         resultSet.getLong("id"),
                         resultSet.getString("model"),
                         resultSet.getBigDecimal("price"),
