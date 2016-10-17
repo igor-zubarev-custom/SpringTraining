@@ -20,6 +20,7 @@ import java.util.List;
 @Service
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CartService {
+    // osa: private?
     @Autowired
     PhoneDao phoneDao;
     Cart cart;
@@ -32,6 +33,7 @@ public class CartService {
         this.cart = cart;
     }
 
+    // osa: getQuantity?
     public Long getAllItems(){
         Cart cart = getCart();
         Long quantity = 0L;
@@ -98,6 +100,7 @@ public class CartService {
         }
     }
 
+    // osa: service layer shall not depend on web layer
     public void updateOrder(Cart cart, CartFormData cartFormData){
         if (cart != null) {
             List<CartItem> cartItems = new ArrayList<>();
@@ -106,6 +109,7 @@ public class CartService {
                 Long quantity = cartItemDTO.getQuantity();
                 if (id != null && quantity != null) {
                     for (CartItem cartItem : cart.getCartItems()) {
+                        // osa: ERROR equals?
                         if (cartItem.getId() == id) {
                             if (quantity != 0) {
                                 cartItem.setQuantity(quantity);
@@ -120,6 +124,7 @@ public class CartService {
         }
     }
 
+    // osa: no servlet dependencies in services please
     public Cart getCart (HttpServletRequest request){
         HttpSession session = request.getSession();
         Cart cart = (Cart) session.getAttribute("cart");

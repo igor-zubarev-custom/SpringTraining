@@ -22,6 +22,7 @@
         event.preventDefault();
         var id = $('#id_${cartItem.id}').val();
         var url = $("#cartItemForm_${cartItem.id}").attr("action");
+        // osa: missing specs: no JSON for AJAX
         sendJson(id, url);
       });
       </c:forEach>
