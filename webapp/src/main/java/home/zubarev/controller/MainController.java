@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
  * +6) fix add2cart javascript
  * +7) spring tags on cart page + error per cart item
  * +8) define DB connection in project.properties
+ * ___________________________
+ *
  */
 @Controller
 public class MainController {

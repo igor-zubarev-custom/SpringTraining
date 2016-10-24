@@ -1,11 +1,19 @@
 package home.zubarev.model;
 
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+@Component
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Cart {
     private Long id;
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new CopyOnWriteArrayList<>();
     private BigDecimal totalPrice;
     private String firstName;
     private String lastName;
@@ -56,14 +64,5 @@ public class Cart {
     }
 
     public Cart() {
-    }
-
-    public Cart(List<CartItem> cartItems, BigDecimal totalPrice, String firstName, String lastName, String deliveryAddress, String contactPhone) {
-        this.cartItems = cartItems;
-        this.totalPrice = totalPrice;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.deliveryAddress = deliveryAddress;
-        this.contactPhone = contactPhone;
     }
 }

@@ -64,14 +64,4 @@ public class Phone {
     public Phone() {
     }
 
-    public Phone(Long id, String model, BigDecimal price, String color, String displaySize, String camera, Integer length, Integer width) {
-        this.id = id;
-        this.model = model;
-        this.price = price;
-        this.color = color;
-        this.displaySize = displaySize;
-        this.camera = camera;
-        this.length = length;
-        this.width = width;
-    }
 }

@@ -7,7 +7,7 @@
   <groupId>home.zubarev.springTraining</groupId>
   <artifactId>webapp</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <name>webapp</name>
 
   <parent>
@@ -15,5 +15,13 @@
     <artifactId>SpringTraning-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>home.zubarev.springTraining</groupId>
+      <artifactId>core</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
 </project>

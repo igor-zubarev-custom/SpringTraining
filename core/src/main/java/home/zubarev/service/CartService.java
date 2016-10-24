@@ -3,83 +3,50 @@ package home.zubarev.service;
 import home.zubarev.dao.PhoneDao;
 import home.zubarev.model.Cart;
 import home.zubarev.model.CartItem;
-import home.zubarev.web.dto.CartItemDTO;
-import home.zubarev.web.formdata.CartFormData;
-import home.zubarev.web.formdata.ProductFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CartService {
     @Autowired
-    PhoneDao phoneDao;
-    Cart cart;
+    @Resource(name = "phoneJdbcDaoImpl")
+    private PhoneDao phoneDao;
+    @Autowired
+    private Cart cart;
 
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    public Long getAllItems(){
-        Cart cart = getCart();
+    public Long getTotalQuantity(){
         Long quantity = 0L;
-        if (cart != null){
-            List<CartItem> cartItems = cart.getCartItems();
-            if (cartItems != null){
-                for (CartItem cartItem : cartItems) {
-                    quantity += cartItem.getQuantity();
-                }
-                return quantity;
-            }
-            return quantity;
+        List<CartItem> cartItems = cart.getCartItems();
+        for (CartItem cartItem : cartItems) {
+            quantity += cartItem.getQuantity();
         }
         return quantity;
     }
 
-    public Long getAllItems(Cart cart){
-        setCart(cart);
-        return getAllItems();
-    }
-
-    public BigDecimal getOrderPrice(){
-        Cart cart = getCart();
+    public BigDecimal getCartPrice(){
         BigDecimal orderPrice = BigDecimal.ZERO;
-        if (cart != null){
-            List<CartItem> cartItems = cart.getCartItems();
-            if (cartItems != null){
-                for (CartItem cartItem : cartItems) {
-                    Long quantity = cartItem.getQuantity();
-                    BigDecimal price = cartItem.getPhone().getPrice();
-                    orderPrice = orderPrice.add(price.multiply(BigDecimal.valueOf(quantity)));
-                }
-                return orderPrice;
-            }
-            return orderPrice;
+        List<CartItem> cartItems = cart.getCartItems();
+        for (CartItem cartItem : cartItems) {
+            Long quantity = cartItem.getQuantity();
+            BigDecimal price = cartItem.getPhone().getPrice();
+            orderPrice = orderPrice.add(price.multiply(BigDecimal.valueOf(quantity)));
         }
         return orderPrice;
     }
 
-    public BigDecimal getOrderPrice(Cart cart){
-        setCart(cart);
-        return getOrderPrice();
-    }
-
-    public boolean deleteOrderItem(Cart cart, Long id){
+    public boolean deleteCartItem(Long id){
         List<CartItem> cartItems = cart.getCartItems();
         for (int i = 0; i < cartItems.size(); i++) {
-            if (cartItems.get(i).getId() == id){
+            if (cartItems.get(i).getId().equals(id)){
                 cartItems.remove(i);
                 return true;
             }
@@ -87,50 +54,48 @@ public class CartService {
         return false;
     }
 
-    public void addOrderItem(Cart cart, CartItem cartItem){
+    public void addItemToCart(Long id, Long quantity) throws SQLException {
         List<CartItem> cartItems = cart.getCartItems();
-        if (cartItems != null){
-            cartItems.add(cartItem);
-        }else {
-            cartItems = new ArrayList<>();
-            cartItems.add(cartItem);
-            cart.setCartItems(cartItems);
+        boolean isExist = false;
+        int index = 0;
+        for (int i = 0; i < cartItems.size(); i++) {
+            if (cartItems.get(i).getId().equals(id)){
+                isExist = true;
+                index = i;
+            }
         }
+        CartItem cartItem = null;
+        if (isExist){
+            cartItem = cartItems.get(index);
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        }else {
+            cartItem = createCartItem(id, quantity);
+            cartItems.add(cartItem);
+        }
+
     }
 
-    public void updateOrder(Cart cart, CartFormData cartFormData){
-        if (cart != null) {
-            List<CartItem> cartItems = new ArrayList<>();
-            for (CartItemDTO cartItemDTO : cartFormData.getCartItemDTOs()) {
-                Long id = cartItemDTO.getId();
-                Long quantity = cartItemDTO.getQuantity();
-                if (id != null && quantity != null) {
-                    for (CartItem cartItem : cart.getCartItems()) {
-                        if (cartItem.getId() == id) {
-                            if (quantity != 0) {
-                                cartItem.setQuantity(quantity);
-                                cartItems.add(cartItem);
-                            }
-                        }
+    public void updateCart(Map<Long, Long> cartItemsModifier){
+        List<CartItem> cartItems = cart.getCartItems();
+        for (Map.Entry<Long, Long> entry : cartItemsModifier.entrySet()) {
+            for (int i = 0; i < cartItems.size(); i++) {
+                if (cartItems.get(i).getId().equals(entry.getKey())){
+                    if (entry.getValue().equals(0)){
+                        cartItems.remove(i);
+                        break;
+                    }else {
+                        cartItems.get(i).setQuantity(entry.getValue());
                     }
-
                 }
             }
-            cart.setCartItems(cartItems);
         }
     }
 
-    public Cart getCart (HttpServletRequest request){
-        HttpSession session = request.getSession();
-        Cart cart = (Cart) session.getAttribute("cart");
-        return cart;
-    }
-
-    public CartItem createCartItem(ProductFormData productFormData) {
+    public CartItem createCartItem(Long id, Long quantity) throws SQLException {
         CartItem cartItem = new CartItem();
-        cartItem.setId(IdGenerator.generateId());
-        cartItem.setPhone(phoneDao.get(productFormData.getId()));
-        cartItem.setQuantity(productFormData.getQuantity());
+        cartItem.setId(id);
+        cartItem.setPhone(phoneDao.getPhone(id));
+        cartItem.setQuantity(quantity);
         return cartItem;
     }
 }

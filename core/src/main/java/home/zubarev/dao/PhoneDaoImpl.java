@@ -23,7 +23,7 @@ public class PhoneDaoImpl implements PhoneDao {
     }
 
     @Override
-    public Phone get(Long id) {
+    public Phone getPhone(Long id) throws SQLException {
         String sql = "SELECT * FROM phone WHERE id = ?";
         Connection connection = null;
         try {
@@ -33,22 +33,11 @@ public class PhoneDaoImpl implements PhoneDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             Phone phone = null;
             if (resultSet.next()){
-                phone = new Phone(
-                    resultSet.getLong("id"),
-                    resultSet.getString("model"),
-                    resultSet.getBigDecimal("price"),
-                    resultSet.getString("color"),
-                    resultSet.getString("display_size"),
-                    resultSet.getString("camera"),
-                    resultSet.getInt("length"),
-                    resultSet.getInt("width")
-                );
+                phone = createPhoneFromResultSet(resultSet);
             }
             resultSet.close();
             preparedStatement.close();
             return phone;
-        } catch (SQLException e) {
-            e.printStackTrace();
         }finally {
             if (connection != null){
                 try {
@@ -58,7 +47,6 @@ public class PhoneDaoImpl implements PhoneDao {
                 }
             }
         }
-        return null;
     }
 
     @Override
@@ -67,7 +55,7 @@ public class PhoneDaoImpl implements PhoneDao {
     }
 
     @Override
-    public List<Phone> findAll() {
+    public List<Phone> getPhones() throws SQLException {
         String sql = "SELECT * FROM phone";
         Connection connection = null;
         try {
@@ -76,23 +64,12 @@ public class PhoneDaoImpl implements PhoneDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Phone> resultList = new ArrayList<>();
             while (resultSet.next()){
-                Phone phone = new Phone(
-                        resultSet.getLong("id"),
-                        resultSet.getString("model"),
-                        resultSet.getBigDecimal("price"),
-                        resultSet.getString("color"),
-                        resultSet.getString("display_size"),
-                        resultSet.getString("camera"),
-                        resultSet.getInt("length"),
-                        resultSet.getInt("width")
-                        );
+                Phone phone = createPhoneFromResultSet(resultSet);
                 resultList.add(phone);
             }
             resultSet.close();
             preparedStatement.close();
             return resultList;
-        } catch (SQLException e) {
-            e.printStackTrace();
         }finally {
             if (connection != null){
                 try {
@@ -102,7 +79,19 @@ public class PhoneDaoImpl implements PhoneDao {
                 }
             }
         }
-        return null;
+    }
+
+    private Phone createPhoneFromResultSet(ResultSet resultSet) throws SQLException {
+        Phone phone = new Phone();
+        phone.setId(resultSet.getLong("id"));
+        phone.setModel(resultSet.getString("model"));
+        phone.setPrice(resultSet.getBigDecimal("price"));
+        phone.setColor(resultSet.getString("color"));
+        phone.setDisplaySize(resultSet.getString("display_size"));
+        phone.setCamera(resultSet.getString("camera"));
+        phone.setLength(resultSet.getInt("length"));
+        phone.setWidth(resultSet.getInt("width"));
+        return phone;
     }
 
     @Override
