@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +53,7 @@ public class CartService {
         return false;
     }
 
-    public void addItemToCart(Long id, Long quantity) throws SQLException {
+    public void addItemToCart(Long id, Long quantity) {
         List<CartItem> cartItems = cart.getCartItems();
         boolean isExist = false;
         int index = 0;
@@ -91,7 +90,7 @@ public class CartService {
         }
     }
 
-    public CartItem createCartItem(Long id, Long quantity) throws SQLException {
+    public CartItem createCartItem(Long id, Long quantity) {
         CartItem cartItem = new CartItem();
         cartItem.setId(id);
         cartItem.setPhone(phoneDao.getPhone(id));

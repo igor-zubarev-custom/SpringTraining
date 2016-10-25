@@ -8,6 +8,7 @@ import home.zubarev.web.formdata.CartInfo;
 import home.zubarev.web.formdata.FormResponse;
 import home.zubarev.web.formdata.ProductFormData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class CartController {
         if (!bindingResult.hasErrors()) {
             try {
                 cartService.addItemToCart(productFormData.getId(), productFormData.getQuantity());
-            } catch (SQLException e) {
+            } catch (DataAccessException e) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 messages.add("Product cant be added to cart");
                 response.setMessageList(messages);

@@ -2,8 +2,8 @@ package home.zubarev.dao;
 
 import home.zubarev.model.Phone;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.stereotype.Component;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +23,7 @@ public class PhoneJdbcDaoImpl implements PhoneDao {
     }
 
     @Override
-    public Phone getPhone(Long id) throws SQLException {
+    public Phone getPhone(Long id) throws InvalidResultSetAccessException {
         String sql = "SELECT * FROM phone WHERE id = ?";
         Connection connection = null;
         try {
@@ -38,6 +38,8 @@ public class PhoneJdbcDaoImpl implements PhoneDao {
             resultSet.close();
             preparedStatement.close();
             return phone;
+        }catch (SQLException e){
+            throw new InvalidResultSetAccessException(e);
         }finally {
             if (connection != null){
                 try {
@@ -55,7 +57,7 @@ public class PhoneJdbcDaoImpl implements PhoneDao {
     }
 
     @Override
-    public List<Phone> getPhones() throws SQLException {
+    public List<Phone> getPhones() throws InvalidResultSetAccessException {
         String sql = "SELECT * FROM phone";
         Connection connection = null;
         try {
@@ -63,13 +65,15 @@ public class PhoneJdbcDaoImpl implements PhoneDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Phone> resultList = new ArrayList<>();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Phone phone = createPhoneFromResultSet(resultSet);
                 resultList.add(phone);
             }
             resultSet.close();
             preparedStatement.close();
             return resultList;
+        }catch (SQLException e){
+            throw new InvalidResultSetAccessException(e);
         }finally {
             if (connection != null){
                 try {

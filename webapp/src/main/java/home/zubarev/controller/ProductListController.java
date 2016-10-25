@@ -3,6 +3,7 @@ package home.zubarev.controller;
 import home.zubarev.dao.PhoneDao;
 import home.zubarev.model.Phone;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,7 +23,7 @@ public class ProductListController {
         List<Phone> productList = null;
         try {
             productList = phoneDao.getPhones();
-        } catch (SQLException e) {
+        } catch (DataAccessException e) {
             model.setViewName("error");
             return model;
         }
