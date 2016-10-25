@@ -14,7 +14,7 @@ import java.sql.SQLException;
 @Controller
 public class ProductDetailsController {
     @Autowired
-    @Resource(name = "phoneJdbcDaoImpl")
+    @Resource(name = "phoneJdbcTemplateDaoImpl")
     private PhoneDao phoneDao;
 
     @RequestMapping(value = "/product/{id}")

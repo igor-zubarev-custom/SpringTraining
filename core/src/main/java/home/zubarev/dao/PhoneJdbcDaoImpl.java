@@ -2,25 +2,51 @@ package home.zubarev.dao;
 
 import home.zubarev.model.Phone;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class PhoneJdbcDaoImpl implements PhoneDao{
+public class PhoneJdbcDaoImpl implements PhoneDao {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private DataSource dataSource;
 
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public Phone getPhone(Long id) throws SQLException {
         String sql = "SELECT * FROM phone WHERE id = ?";
-        Phone phone = jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Phone.class));
-        return phone;
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(new Integer(1), id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Phone phone = null;
+            if (resultSet.next()){
+                phone = createPhoneFromResultSet(resultSet);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return phone;
+        }finally {
+            if (connection != null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -31,8 +57,41 @@ public class PhoneJdbcDaoImpl implements PhoneDao{
     @Override
     public List<Phone> getPhones() throws SQLException {
         String sql = "SELECT * FROM phone";
-        List<Phone> phones = jdbcTemplate.query(sql, new BeanPropertyRowMapper<Phone>(Phone.class));
-        return phones;
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Phone> resultList = new ArrayList<>();
+            while (resultSet.next()){
+                Phone phone = createPhoneFromResultSet(resultSet);
+                resultList.add(phone);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return resultList;
+        }finally {
+            if (connection != null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private Phone createPhoneFromResultSet(ResultSet resultSet) throws SQLException {
+        Phone phone = new Phone();
+        phone.setId(resultSet.getLong("id"));
+        phone.setModel(resultSet.getString("model"));
+        phone.setPrice(resultSet.getBigDecimal("price"));
+        phone.setColor(resultSet.getString("color"));
+        phone.setDisplaySize(resultSet.getString("display_size"));
+        phone.setCamera(resultSet.getString("camera"));
+        phone.setLength(resultSet.getInt("length"));
+        phone.setWidth(resultSet.getInt("width"));
+        return phone;
     }
 
     @Override

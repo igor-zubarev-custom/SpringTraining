@@ -18,7 +18,7 @@ import java.util.Map;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CartService {
     @Autowired
-    @Resource(name = "phoneJdbcDaoImpl")
+    @Resource(name = "phoneJdbcTemplateDaoImpl")
     private PhoneDao phoneDao;
     @Autowired
     private Cart cart;

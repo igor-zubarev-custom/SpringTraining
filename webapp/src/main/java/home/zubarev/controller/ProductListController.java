@@ -2,7 +2,6 @@ package home.zubarev.controller;
 
 import home.zubarev.dao.PhoneDao;
 import home.zubarev.model.Phone;
-import home.zubarev.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,7 @@ import java.util.List;
 @Controller
 public class ProductListController {
     @Autowired
-    @Resource(name = "phoneJdbcDaoImpl")
+    @Resource(name = "phoneJdbcTemplateDaoImpl")
     private PhoneDao phoneDao;
 
     @RequestMapping(value = "/products")

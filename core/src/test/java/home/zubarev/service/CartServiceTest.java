@@ -1,12 +1,12 @@
 package home.zubarev.service;
 
 import home.zubarev.dao.PhoneDao;
-import home.zubarev.dao.PhoneDaoImpl;
+import home.zubarev.dao.PhoneJdbcDaoImpl;
 import home.zubarev.model.Cart;
 import org.junit.Test;
 
 public class CartServiceTest {
-    private PhoneDao phoneDao = new PhoneDaoImpl();
+    private PhoneDao phoneDao = new PhoneJdbcDaoImpl();
     private Cart cart = new Cart();
 
     @Test
