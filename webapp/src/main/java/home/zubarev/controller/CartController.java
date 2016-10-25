@@ -60,7 +60,7 @@ public class CartController {
 
         }else {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setMessageList(converBindingResultToMessageList(bindingResult));
+            response.setMessageList(convertBindingResultToMessageList(bindingResult));
             return response;
         }
 
@@ -92,7 +92,7 @@ public class CartController {
             }
         }else {
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            response.setMessageList(converBindingResultToMessageList(bindingResult));
+            response.setMessageList(convertBindingResultToMessageList(bindingResult));
             return response;
         }
     }
@@ -106,7 +106,7 @@ public class CartController {
         return "cart";
     }
 
-    private List<String> converBindingResultToMessageList (BindingResult bindingResult){
+    private List<String> convertBindingResultToMessageList (BindingResult bindingResult){
         List<String> messages = new ArrayList<>();
         for (ObjectError objectError : bindingResult.getAllErrors()) {
             messages.add(objectError.getDefaultMessage());
