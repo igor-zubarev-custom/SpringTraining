@@ -1,12 +1,9 @@
 package home.zubarev.dao;
 
-import home.zubarev.model.Cart;
+import home.zubarev.model.Order;
 
 import java.util.List;
 
 public interface OrderDao {
-    Cart get (Long id);
-    void save (Cart cart);
-    List<Cart> findAll();
-    void close();
+    Long save (Order order);
 }

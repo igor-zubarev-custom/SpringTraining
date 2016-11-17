@@ -1,5 +1,8 @@
 package home.zubarev.model;
 
+
+import java.math.BigDecimal;
+
 public class CartItem {
     private Long id;
     private Phone phone;
@@ -31,5 +34,9 @@ public class CartItem {
         this.phone = phone;
         this.quantity = quantity;
         id = phone.getId();
+    }
+
+    public BigDecimal getPrice(){
+        return phone.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }

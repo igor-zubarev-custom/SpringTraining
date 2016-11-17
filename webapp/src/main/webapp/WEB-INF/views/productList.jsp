@@ -16,6 +16,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/resources/css/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="/resources/js/script.js"></script>
@@ -42,8 +43,8 @@
         <td>${product.price}</td>
         <form:form id = "productsForm_${product.id}" action="/addToCart">
           <input type="hidden" id="id_${product.id}" value="${product.id}"/>
-          <td><input id="quantity_${product.id}" type="text" value="1" class="form-control"/></td>
-          <td><button id="${product.id}" type="submit" class="btn btn-success" onclick="sendAddToCartJson(event, this)">Add to cart</button></td>
+          <td id="input_${product.id}"><input id="quantity_${product.id}" type="text" value="1" class="form-control"/></td>
+          <td><button id="${product.id}" type="submit" class="btn btn-success" onclick="SpringTraining.Product.sendAddToCartJson(event, this)">Add to cart</button></td>
         </form:form>
       </tr>
     </c:forEach>

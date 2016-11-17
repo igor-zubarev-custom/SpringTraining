@@ -3,12 +3,11 @@ package home.zubarev.service;
 import home.zubarev.dao.PhoneDao;
 import home.zubarev.model.Cart;
 import home.zubarev.model.CartItem;
+import home.zubarev.model.DeliveryInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -17,29 +16,53 @@ import java.util.Map;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CartService {
     @Autowired
-    @Resource(name = "phoneJdbcTemplateDaoImpl")
     private PhoneDao phoneDao;
     @Autowired
     private Cart cart;
 
+    public PhoneDao getPhoneDao() {
+        return phoneDao;
+    }
+    public void setPhoneDao(PhoneDao phoneDao) {
+        this.phoneDao = phoneDao;
+    }
+    public Cart getCart() {
+        return cart;
+    }
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     public Long getTotalQuantity(){
+        return cart.getTotalQuantity();
+    }
+
+    public BigDecimal getCartPrice(){
+        return cart.getTotalPrice();
+    }
+
+    public void calculateTotalQuantity(){
         Long quantity = 0L;
         List<CartItem> cartItems = cart.getCartItems();
         for (CartItem cartItem : cartItems) {
             quantity += cartItem.getQuantity();
         }
-        return quantity;
+        cart.setTotalQuantity(quantity);
     }
 
-    public BigDecimal getCartPrice(){
-        BigDecimal orderPrice = BigDecimal.ZERO;
+    public void calculateCartPrice(){
+        BigDecimal cartPrice = BigDecimal.ZERO;
         List<CartItem> cartItems = cart.getCartItems();
         for (CartItem cartItem : cartItems) {
             Long quantity = cartItem.getQuantity();
             BigDecimal price = cartItem.getPhone().getPrice();
-            orderPrice = orderPrice.add(price.multiply(BigDecimal.valueOf(quantity)));
+            cartPrice = cartPrice.add(price.multiply(BigDecimal.valueOf(quantity)));
         }
-        return orderPrice;
+        cart.setTotalPrice(cartPrice);
+    }
+
+    public BigDecimal getTotalPrice(){
+        return cart.getTotalPrice().add(cart.getDeliveryInfo().getDeliveryPrice());
     }
 
     public boolean deleteCartItem(Long id){
@@ -47,6 +70,8 @@ public class CartService {
         for (int i = 0; i < cartItems.size(); i++) {
             if (cartItems.get(i).getId().equals(id)){
                 cartItems.remove(i);
+                calculateCartPrice();
+                calculateTotalQuantity();
                 return true;
             }
         }
@@ -71,9 +96,11 @@ public class CartService {
             cartItem = createCartItem(id, quantity);
             cartItems.add(cartItem);
         }
-
+        calculateCartPrice();
+        calculateTotalQuantity();
     }
 
+    // Map<cart item id, current quantity>
     public void updateCart(Map<Long, Long> cartItemsModifier){
         List<CartItem> cartItems = cart.getCartItems();
         for (Map.Entry<Long, Long> entry : cartItemsModifier.entrySet()) {
@@ -88,6 +115,8 @@ public class CartService {
                 }
             }
         }
+        calculateCartPrice();
+        calculateTotalQuantity();
     }
 
     public CartItem createCartItem(Long id, Long quantity) {
@@ -96,5 +125,20 @@ public class CartService {
         cartItem.setPhone(phoneDao.getPhone(id));
         cartItem.setQuantity(quantity);
         return cartItem;
+    }
+
+    public void setDeliveryInfo(String firstName, String lastName, String address, String phone, String comment) {
+        DeliveryInfo deliveryInfo = cart.getDeliveryInfo();
+        deliveryInfo.setFirstName(firstName);
+        deliveryInfo.setLastName(lastName);
+        deliveryInfo.setDeliveryAddress(address);
+        deliveryInfo.setContactPhone(phone);
+        deliveryInfo.setComment(comment);
+    }
+
+    public void clearCart() {
+        cart.getCartItems().clear();
+        cart.setTotalPrice(BigDecimal.ZERO);
+        cart.setTotalQuantity(0L);
     }
 }

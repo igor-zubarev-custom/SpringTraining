@@ -8,17 +8,20 @@ import home.zubarev.web.formdata.CartInfo;
 import home.zubarev.web.formdata.FormResponse;
 import home.zubarev.web.formdata.ProductFormData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,9 +29,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CartController {
     @Autowired
     private CartService cartService;
+    @Autowired
+    private ApplicationContext context;
 
     @RequestMapping(value = "/cart")
-    public String cart (){
+    public String cart (Model model){
+        model.addAttribute("cartFormData", new CartFormData());
         return "cart";
     }
 
@@ -41,64 +47,46 @@ public class CartController {
     }
 
     @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
-    public @ResponseBody
-    FormResponse addToCart(@Valid @RequestBody ProductFormData productFormData, BindingResult bindingResult, HttpServletResponse httpServletResponse){
+    public ResponseEntity<FormResponse> addToCart(@Valid @RequestBody ProductFormData productFormData, BindingResult bindingResult){
         FormResponse response = new FormResponse();
         List<String> messages = new ArrayList<>();
-        if (!bindingResult.hasErrors()) {
-            try {
-                cartService.addItemToCart(productFormData.getId(), productFormData.getQuantity());
-            } catch (DataAccessException e) {
-                httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                messages.add("Product cant be added to cart");
-                response.setMessageList(messages);
-                return response;
-            }
-            messages.add("Product has been added to cart");
-            response.setMessageList(messages);
-            return response;
-
-        }else {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if (bindingResult.hasErrors()) {
             response.setMessageList(convertBindingResultToMessageList(bindingResult));
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+        try {
+            cartService.addItemToCart(productFormData.getId(), productFormData.getQuantity());
+        } catch (DataAccessException e) {
+            messages.add(context.getMessage("cart.product.add.cant", null, Locale.getDefault()));
+            response.setMessageList(messages);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        messages.add(context.getMessage("cart.product.add.ok", null, Locale.getDefault()));
+        response.setMessageList(messages);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public @ResponseBody FormResponse handleHttpMessageNotReadableException (HttpMessageNotReadableException exception, HttpServletResponse httpServletResponse){
+    public ResponseEntity<FormResponse> handleHttpMessageNotReadableException (HttpMessageNotReadableException exception){
         FormResponse formResponse = new FormResponse();
         List<String> messages = new ArrayList<>();
-        messages.add("Quantity must be a number");
+        messages.add(context.getMessage("cart.product.add.quantity.bad", null, Locale.getDefault()));
         formResponse.setMessageList(messages);
-        httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return formResponse;
+        return new ResponseEntity<>(formResponse, HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/deleteFromCart", method = RequestMethod.POST)
-    public @ResponseBody FormResponse deleteFromCart (@Valid @RequestBody CartItemIdDTO idDTO, BindingResult bindingResult, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+    public @ResponseBody FormResponse deleteFromCart (@RequestBody CartItemIdDTO idDTO){
         FormResponse response = new FormResponse();
         List<String> messages = new ArrayList<>();
-        if (!bindingResult.hasErrors()){
-            if(cartService.deleteCartItem(idDTO.getId())){
-                messages.add("Item has been deleted from cart");
-                response.setMessageList(messages);
-                return response;
-            }else {
-                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                messages.add("Item has not been deleted from cart");
-                response.setMessageList(messages);
-                return response;
-            }
-        }else {
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            response.setMessageList(convertBindingResultToMessageList(bindingResult));
-            return response;
-        }
+        cartService.deleteCartItem(idDTO.getId());
+        messages.add(context.getMessage("cart.product.delete.ok", null, Locale.getDefault()));
+        response.setMessageList(messages);
+        return response;
     }
 
     @RequestMapping(value = "/updateCart", method = RequestMethod.POST)
-    public String updateCart (@Valid @ModelAttribute CartFormData cartFormData, BindingResult bindingResult){
+    public String updateCart (@Valid @ModelAttribute("cartFormData")CartFormData cartFormData, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             return "cart";
         }
