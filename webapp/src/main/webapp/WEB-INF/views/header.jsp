@@ -14,7 +14,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-4">
-        <a href="/products"><img class="brand-img img-responsive" src="/resources/img/phone.png"></a>
+        <a href="/shop/products"><img class="brand-img img-responsive" src="/resources/img/phone.png"></a>
       </div>
       <div class="col-sm-8">
         <ul class="nav navbar-nav navbar-right">

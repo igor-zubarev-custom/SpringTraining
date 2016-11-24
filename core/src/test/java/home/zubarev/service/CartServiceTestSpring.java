@@ -1,24 +1,18 @@
 package home.zubarev.service;
 
-import home.zubarev.dao.PhoneDao;
 import home.zubarev.model.Cart;
 import home.zubarev.model.CartItem;
 import home.zubarev.model.DeliveryInfo;
 import home.zubarev.model.Phone;
-import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,25 +25,6 @@ public class CartServiceTestSpring {
 
     @Autowired
     private CartService cartService;
-
-//    @BeforeClass
-//    public static void initializingClass(){
-//        Phone phone1 = new Phone();
-//        phone1.setId(1L);
-//        phone1.setPrice(BigDecimal.valueOf(100));
-//        Phone phone2 = new Phone();
-//        phone2.setId(2L);
-//        phone2.setPrice(BigDecimal.valueOf(200));
-//        List<Phone> phones = new ArrayList<>();
-//        phones.add(phone1);
-//        phones.add(phone2);
-//        PhoneDao phoneDao = EasyMock.createMock(PhoneDao.class);
-//        EasyMock.expect(phoneDao.getPhone(1L)).andReturn(phone1);
-//        EasyMock.expect(phoneDao.getPhone(2L)).andReturn(phone2);
-//        //EasyMock.expect(phoneDao.getPhones()).andReturn(phones);
-//        EasyMock.replay(phoneDao);
-//        cartService.setPhoneDao(phoneDao);
-//    }
 
     @Before
     public void initializingTest(){

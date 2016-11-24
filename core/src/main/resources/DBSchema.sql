@@ -15,12 +15,54 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE DATABASE  IF NOT EXISTS `springtrainingtest` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `springtrainingtest`;
 --
 -- Table structure for table `order_item`
 --
 SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `order_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `order_item` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `phone` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `PhoneForeignKey_idx` (`phone`),
+  KEY `OrderForeignKey_idx` (`order_id`),
+  CONSTRAINT `OrderForeignKey` FOREIGN KEY (`order_id`) REFERENCES `order_table` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `PhoneForeignKey` FOREIGN KEY (`phone`) REFERENCES `phone` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `order_table`
+--
+
+DROP TABLE IF EXISTS `order_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `order_table` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cart_price` double NOT NULL,
+  `total_quantity` int(11) NOT NULL,
+  `delivery_price` double NOT NULL,
+  `total_price` double NOT NULL,
+  `first_name` varchar(45) NOT NULL,
+  `last_name` varchar(45) NOT NULL,
+  `delivery_address` varchar(45) NOT NULL,
+  `contact_phone` varchar(45) NOT NULL,
+  `comment` varchar(45) DEFAULT NULL,
+  `status` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `phone`
+--
 
 DROP TABLE IF EXISTS `phone`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -37,53 +79,7 @@ CREATE TABLE `phone` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `order_table`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `order_table` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cart_price` double NOT NULL,
-  `total_quantity` int(11) NOT NULL,
-  `delivery_price` double NOT NULL,
-  `total_price` double NOT NULL,
-  `first_name` varchar(45) NOT NULL,
-  `last_name` varchar(45) NOT NULL,
-  `delivery_address` varchar(45) NOT NULL,
-  `contact_phone` varchar(45) NOT NULL,
-  `comment` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `key_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `order_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `order_item` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `phone` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `PhoneForeignKey_idx` (`phone`),
-  KEY `OrderForeignKey_idx` (`order_id`),
-  CONSTRAINT `OrderForeignKey` FOREIGN KEY (`order_id`) REFERENCES `order_table` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `PhoneForeignKey` FOREIGN KEY (`phone`) REFERENCES `phone` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `order_table`
---
 SET FOREIGN_KEY_CHECKS=1;
-
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `phone`
---
-
-
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -95,4 +91,4 @@ SET FOREIGN_KEY_CHECKS=1;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-22  6:55:14
+-- Dump completed on 2016-11-24 19:58:57

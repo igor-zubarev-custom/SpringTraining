@@ -16,38 +16,15 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `order_item`
---
-SET FOREIGN_KEY_CHECKS=0;
-
-LOCK TABLES `order_item` WRITE;
-/*!40000 ALTER TABLE `order_item` DISABLE KEYS */;
-INSERT INTO `order_item` VALUES (2,1,1,5),(3,1,2,6),(4,2,1,6),(5,1,1,7),(6,2,1,8),(7,1,2,9),(8,1,2,10),(9,1,1,11);
-/*!40000 ALTER TABLE `order_item` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `order_table`
---
-
-LOCK TABLES `order_table` WRITE;
-/*!40000 ALTER TABLE `order_table` DISABLE KEYS */;
-INSERT INTO `order_table` VALUES (5,600,1,5,605,'q','q','q','111111111','z'),(6,1650,3,5,1655,'q','q','q','111111111','q'),(7,600,1,5,605,'qe','q','q','111111111','q'),(8,450,1,5,455,'q','w','w','111111111','q'),(9,1200,2,5,1205,'gdhg','ghfghg','ghfghgfh','111111111','rtrtrtert'),(10,1200,2,5,1205,'q','q','q','111111111',''),(11,600,1,5,605,'q','q','q','111111111','');
-/*!40000 ALTER TABLE `order_table` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `phone`
 --
-
+SET FOREIGN_KEY_CHECKS=0;
 LOCK TABLES `phone` WRITE;
 /*!40000 ALTER TABLE `phone` DISABLE KEYS */;
 INSERT INTO `phone` VALUES (1,'Samsung s6',600,'blue','1280x920','12mp',50,150),(2,'Nexus 4',450,'green','123123','31',123,412);
 /*!40000 ALTER TABLE `phone` ENABLE KEYS */;
 UNLOCK TABLES;
-
-SET FOREIGN_KEY_CHECKS=0;
-
+SET FOREIGN_KEY_CHECKS=1;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -58,4 +35,4 @@ SET FOREIGN_KEY_CHECKS=0;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-22  6:55:54
+-- Dump completed on 2016-11-24 20:01:36
