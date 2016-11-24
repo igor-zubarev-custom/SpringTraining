@@ -15,7 +15,7 @@
 <c:import url="header.jsp"/>
 <div class="container">
   <div class="row">
-    <div class="col-md-4 col-md-offset-4"><a href="/products" class="pull-center">Thank you for your purchase, return to products</a></div>
+    <div class="col-md-4 col-md-offset-4"><a href="/shop/products" class="pull-center">Thank you for your purchase, return to products</a></div>
   </div>
   <div class="row">
     <div class="col-md-4 col-md-offset-4"><div class="pull-center">Your order number is ${orderId}</div></div>

@@ -1,18 +1,7 @@
-// jQuery please
+
 $(document).ready(function () {
     getCartInfo();
-})
-//window.onload = getCartInfo();
-
-// use 'JS' classes or namespaces
-// SpringTraining.Product {
-//   addToCart()
-//   ...
-// }
-// SpringTraining.Cart {
-//   updateCart()
-//   ...
-// }
+});
 
 var SpringTraining = {};
 SpringTraining.Product = {
@@ -29,6 +18,8 @@ SpringTraining.Product = {
         $('.success').remove();
         $('.error').remove();
 
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
         $.ajax({
             url: url,
             data: JSON.stringify(json),
@@ -36,6 +27,7 @@ SpringTraining.Product = {
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader(header, token);
             },
             success: function (response) {
                 var messages = response.messageList;
@@ -59,18 +51,20 @@ SpringTraining.Product = {
             }
         });
     }
-}
+};
 
 SpringTraining.Cart = {
     sendDeleteJson: function (event, elem) {
         event.preventDefault();
         var id = elem.getAttribute('id');
-        var url = '/deleteFromCart';
+        var url = '/shop/deleteFromCart';
         SpringTraining.Cart.sendDeleteFromCartJson(id, url);
     },
 
     sendDeleteFromCartJson: function (id, url) {
         var json = {"id" : id};
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
         $.ajax({
             url: url,
             data: JSON.stringify(json),
@@ -78,13 +72,52 @@ SpringTraining.Cart = {
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader(header, token);
             },
             success: function (response) {
-                location.reload();
+                $('#row_' + id).remove();
+                getCartInfo();               
             }
         });
     }
-}
+};
+
+SpringTraining.Admin = {
+    sendChangeStatusJson: function (event, elem) {
+        event.preventDefault();
+        var url = "/admin/changeOrderStatus";
+        var id = elem.getAttribute('id');
+        var currentStatus = $('#status_' + id).text();
+        var changedStatus = "";
+        var statusCode = "";
+        
+        if (currentStatus == "WAITING FOR DELIVERY"){
+            statusCode = 0;
+            changedStatus = "COMPLETED";            
+        };
+        if (currentStatus == "COMPLETED"){
+            statusCode = 1;
+            changedStatus = "WAITING FOR DELIVERY";            
+        };
+        
+        var json = {"orderId" : id, "statusNumber" : statusCode};
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $.ajax({
+            url: url,
+            data: JSON.stringify(json),
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader(header, token);
+            },
+            success: function (response) {
+                $('#status_' + id).html(changedStatus);               
+            }
+        });
+    }
+};
 
 
 
@@ -98,7 +131,7 @@ function getCartInfo() {
             $('.cartMini').html('My cart: ' + response.quantity + ' items, ' + response.price + '$');
         }
     })
-}
+};
 
 
 

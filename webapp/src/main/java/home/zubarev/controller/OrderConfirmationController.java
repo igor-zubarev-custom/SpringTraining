@@ -1,6 +1,5 @@
 package home.zubarev.controller;
 
-import home.zubarev.service.CartService;
 import home.zubarev.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,26 +12,22 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes("orderId")
 public class OrderConfirmationController {
     @Autowired
-    private CartService cartService;
-    @Autowired
     private OrderService orderService;
 
-    @RequestMapping(value = "/orderConfirmation")
+    @RequestMapping(value = "/shop/orderConfirmation")
     public String orderConfirmation(Model model){
         model.addAttribute("order", orderService.getOrder());
         return "orderConfirmation";
     }
 
-    @RequestMapping(value = "/confirmOrder")
+    @RequestMapping(value = "/shop/confirmOrder")
     public String confirmOrder(Model model){
-        Long orderId = orderService.saveOrder();
-        orderService.deleteOrder();
-        cartService.clearCart();
+        Long orderId = orderService.placeOrder();
         model.addAttribute("orderId", orderId);
-        return "redirect:/success";
+        return "redirect:/shop/success";
     }
 
-    @RequestMapping(value = "/success")
+    @RequestMapping(value = "/shop/success")
     public String success(){
         return "success";
     }

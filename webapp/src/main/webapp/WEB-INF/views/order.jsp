@@ -18,7 +18,7 @@
 
 <body>
 <c:import url="header.jsp"/>
-<c:set var="cart" scope="page" value="${sessionScope['scopedTarget.cart']}" />
+<c:set var="cart" scope="page" value="${cartService.getCart()}" />
 <div class="container">
   <h3>Order</h3>
 </div>
@@ -48,7 +48,7 @@
           <td colspan="3"><td>Delivery</td><td>${cart.deliveryInfo.deliveryPrice}</td>
         </tr>
         <tr>
-          <td colspan="3"><td>TOTAL</td><td>${sessionScope['scopedTarget.cartService'].getTotalPrice()}</td>
+          <td colspan="3"><td>TOTAL</td><td>${cartService.getTotalPrice()}</td>
         </tr>
       </table>
     </div>
@@ -56,7 +56,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <form:form method="post" modelAttribute="addressFormData" action="/order">
+          <form:form method="post" modelAttribute="addressFormData" action="/shop/order">
             <table class="table table-striped">
               <tr>
                 <td class="col-md-2">First Name</td>
@@ -104,7 +104,7 @@
   <c:otherwise>
     <div class="container">
       <div class="row">
-        <div class="col-md-4 col-md-offset-5"><a href="/products" class="pull-center">Cart is empty, return to products</a></div>
+        <div class="col-md-4 col-md-offset-5"><a href="/shop/products" class="pull-center">Cart is empty, return to products</a></div>
       </div>
     </div>
   </c:otherwise>

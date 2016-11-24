@@ -15,6 +15,8 @@
   <title>Product page</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" content="${_csrf.token}" />
+  <meta name="_csrf_header" content="${_csrf.headerName}" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="/resources/css/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -51,7 +53,7 @@
         <td>Camera</td><td>${product.camera}</td>
       </tr>
       <tr id="row_${product.id}">
-        <form:form id = "productsForm_${product.id}" action="/addToCart">
+        <form:form id = "productsForm_${product.id}" action="/shop/addToCart">
           <input type="hidden" id="id_${product.id}" value="${product.id}"/>
           <td id="input_${product.id}"><input id="quantity_${product.id}" type="text" value="1" class="form-control"/></td>
           <td><button id="${product.id}" type="submit" class="btn btn-success" onclick="SpringTraining.Product.sendAddToCartJson(event, this)">Add to cart</button></td>

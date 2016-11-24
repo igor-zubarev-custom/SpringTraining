@@ -15,6 +15,7 @@ public class Order {
     private String deliveryAddress;
     private String contactPhone;
     private String comment;
+    private String status;
 
     public Long getId() {
         return id;
@@ -81,6 +82,12 @@ public class Order {
     }
     public void setComment(String comment) {
         this.comment = comment;
+    }
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Order() {

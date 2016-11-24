@@ -13,7 +13,7 @@ public class ProductDetailsController {
     @Autowired
     private PhoneDao phoneDao;
 
-    @RequestMapping(value = "/product/{id}")
+    @RequestMapping(value = "/shop/product/{id}")
     public String product (@PathVariable("id") Long id, Model model){
         Phone product = phoneDao.getPhone(id);
         model.addAttribute("product", product);

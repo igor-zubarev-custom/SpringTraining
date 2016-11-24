@@ -1,5 +1,7 @@
 package home.zubarev.controller;
 
+import home.zubarev.model.Cart;
+import home.zubarev.model.CartItem;
 import home.zubarev.service.CartService;
 import home.zubarev.web.dto.CartItemDTO;
 import home.zubarev.web.dto.CartItemIdDTO;
@@ -19,10 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
@@ -32,10 +31,22 @@ public class CartController {
     @Autowired
     private ApplicationContext context;
 
-    @RequestMapping(value = "/cart")
+    @RequestMapping(value = "/shop/cart")
     public String cart (Model model){
-        model.addAttribute("cartFormData", new CartFormData());
+        model.addAttribute("cartFormData", populateCartFormData());
+        model.addAttribute("cart", cartService.getCart());
         return "cart";
+    }
+
+    private CartFormData populateCartFormData(){
+        CartFormData cartFormData = new CartFormData();
+        List<CartItemDTO> cartItemDTOs = new ArrayList<>();
+        Cart cart = cartService.getCart();
+        for (CartItem cartItem : cart.getCartItems()) {
+            cartItemDTOs.add(new CartItemDTO(cartItem.getId(), cartItem.getQuantity()));
+        }
+        cartFormData.setCartItemDTOs(cartItemDTOs);
+        return cartFormData;
     }
 
     @RequestMapping(value = "/cartInfo", method = RequestMethod.GET)
@@ -46,7 +57,7 @@ public class CartController {
         return cartInfo;
     }
 
-    @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
+    @RequestMapping(value = "/shop/addToCart", method = RequestMethod.POST)
     public ResponseEntity<FormResponse> addToCart(@Valid @RequestBody ProductFormData productFormData, BindingResult bindingResult){
         FormResponse response = new FormResponse();
         List<String> messages = new ArrayList<>();
@@ -75,7 +86,7 @@ public class CartController {
         return new ResponseEntity<>(formResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/deleteFromCart", method = RequestMethod.POST)
+    @RequestMapping(value = "/shop/deleteFromCart", method = RequestMethod.POST)
     public @ResponseBody FormResponse deleteFromCart (@RequestBody CartItemIdDTO idDTO){
         FormResponse response = new FormResponse();
         List<String> messages = new ArrayList<>();
@@ -85,12 +96,14 @@ public class CartController {
         return response;
     }
 
-    @RequestMapping(value = "/updateCart", method = RequestMethod.POST)
-    public String updateCart (@Valid @ModelAttribute("cartFormData")CartFormData cartFormData, BindingResult bindingResult){
+    @RequestMapping(value = "/shop/updateCart", method = RequestMethod.POST)
+    public String updateCart (@Valid @ModelAttribute("cartFormData")CartFormData cartFormData, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
+            model.addAttribute("cart", cartService.getCart());
             return "cart";
         }
         cartService.updateCart(convertCartFormDataToMap(cartFormData));
+        model.addAttribute("cart", cartService.getCart());
         return "cart";
     }
 
@@ -103,6 +116,9 @@ public class CartController {
     }
 
     private Map<Long, Long> convertCartFormDataToMap (CartFormData cartFormData){
+        if (cartFormData.getCartItemDTOs() == null){
+            return new HashMap<>();
+        }
         Map<Long, Long> cartModifier = new ConcurrentHashMap<>();
         for (CartItemDTO cartItemDto : cartFormData.getCartItemDTOs()) {
             cartModifier.put(cartItemDto.getId(), cartItemDto.getQuantity());

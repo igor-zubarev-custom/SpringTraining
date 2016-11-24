@@ -73,7 +73,7 @@
                 <td colspan="2">${order.comment}</td>
               </tr>
               <tr>
-                <td><a href="/confirmOrder"><button class="btn btn-primary">Confirm order</button></a></td>
+                <td><a href="/shop/confirmOrder"><button class="btn btn-primary">Confirm order</button></a></td>
               </tr>
             </table>
 
@@ -84,7 +84,7 @@
   <c:otherwise>
     <div class="container">
       <div class="row">
-        <div class="col-md-4 col-md-offset-5"><a href="/products" class="pull-center">Cart is empty, return to products</a></div>
+        <div class="col-md-4 col-md-offset-5"><a href="/shop/products" class="pull-center">Cart is empty, return to products</a></div>
       </div>
     </div>
   </c:otherwise>

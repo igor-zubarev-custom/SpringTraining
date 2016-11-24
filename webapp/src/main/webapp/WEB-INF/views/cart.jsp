@@ -9,6 +9,8 @@
   <title>Product List</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" content="${_csrf.token}" />
+  <meta name="_csrf_header" content="${_csrf.headerName}" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="/resources/css/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -22,7 +24,7 @@
   <h3>Cart</h3>
 </div>
 <c:choose>
-<c:when test="${sessionScope['scopedTarget.cart'].cartItems.size() != 0}">
+<c:when test="${cart.cartItems.size() != 0}">
 
 <div class="container">
 <table class="table table-striped">
@@ -32,15 +34,15 @@
   <th>Price</th>
   <th>Quantity</th>
   <th>Action</th>
-  <form:form id="cartForm" method="post" action="/updateCart" modelAttribute="cartFormData">
-    <c:forEach var="cartItem" items="${sessionScope['scopedTarget.cart'].cartItems}" varStatus="number">
+  <form:form id="cartForm" method="post" action="/shop/updateCart" modelAttribute="cartFormData">
+    <c:forEach var="cartItem" items="${cart.cartItems}" varStatus="number">
       <tr id="row_${cartItem.id}">
         <td>${cartItem.phone.model}</td>
         <td>${cartItem.phone.color}</td>
         <td>${cartItem.phone.displaySize}</td>
         <td>${cartItem.phone.price}</td>
         <td>
-          <form:input path="cartItemDTOs[${number.index}].quantity" type="text" value="${cartItem.quantity}" class="form-control"/>
+          <form:input path="cartItemDTOs[${number.index}].quantity" type="text" class="form-control"/>
           <form:errors path="cartItemDTOs[${number.index}].quantity" cssClass="error"/>
           <form:hidden path="cartItemDTOs[${number.index}].id" value="${cartItem.id}"/>
         </td>
@@ -59,7 +61,7 @@
         <button type="submit" class="btn btn-primary" form="cartForm">Update</button>
       </div>
       <div class="col-md-1">
-        <a href="/order" class="btn btn-success">Order</a>
+        <a href="/shop/order" class="btn btn-success">Order</a>
       </div>
     </div>
   </div>
@@ -67,7 +69,7 @@
 <c:otherwise>
   <div class="container">
     <div class="row">
-      <div class="col-md-4 col-md-offset-5"><a href="/products" class="pull-center">Cart is empty, return to products</a></div>
+      <div class="col-md-4 col-md-offset-5"><a href="/shop/products" class="pull-center">Cart is empty, return to products</a></div>
     </div>
   </div>
 </c:otherwise>

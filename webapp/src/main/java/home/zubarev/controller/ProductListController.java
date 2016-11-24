@@ -13,7 +13,7 @@ public class ProductListController {
     @Autowired
     private PhoneDao phoneDao;
 
-    @RequestMapping(value = "/products")
+    @RequestMapping(value = "/shop/products")
     public String productList (Model model){
         List<Phone> productList = productList = phoneDao.getPhones();
         model.addAttribute("productList", productList);

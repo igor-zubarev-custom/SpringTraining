@@ -19,16 +19,12 @@
   <div class="row">
     <div class="col-md-12">
       <div class="error-template">
-        <h1>
-          Oops!</h1>
-        <h2>
-          Something not wrong</h2>
+        <h1>Oops!</h1>
         <div class="error-details">
-          Sorry, an error has occured, please request page later!
+          ${message}
         </div>
         <div class="error-actions">
-          <a href="/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>Take Me Home</a>
-          <a href="/shop/products" class="btn btn-default btn-lg">Return to products</a>
+          <a href="/login" class="btn btn-default btn-lg">Please Login</a>
         </div>
       </div>
     </div>

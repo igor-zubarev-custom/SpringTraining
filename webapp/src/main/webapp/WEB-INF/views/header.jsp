@@ -9,6 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <html>
   <div class="container">
     <div class="row">
@@ -17,8 +18,14 @@
       </div>
       <div class="col-sm-8">
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/products" class="btn btn-info">Products</a></li>
-          <li><a href="/cart" class="cartMini btn btn-success"></a></li>
+          <sec:authorize access="isAuthenticated()">
+            <li><a href="<c:url value="/logout"/>">Logout</a></li>
+          </sec:authorize>
+          <sec:authorize access="isAnonymous()">
+            <li><a href="<c:url value="/login"/>">Login</a></li>
+          </sec:authorize>
+          <li><a href="/shop/products" class="btn btn-info">Products</a></li>
+          <li><a href="/shop/cart" class="cartMini btn btn-success"></a></li>
         </ul>
       </div>
     </div>

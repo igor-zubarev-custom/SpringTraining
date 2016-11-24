@@ -30,4 +30,12 @@ public class CartItemDTO {
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
+
+    public CartItemDTO() {
+    }
+
+    public CartItemDTO(Long id, Long quantity) {
+        this.id = id;
+        this.quantity = quantity;
+    }
 }

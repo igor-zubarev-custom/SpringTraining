@@ -19,14 +19,16 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @RequestMapping(value = "/order")
+    @RequestMapping(value = "/shop/order")
     public String order(Model model){
         model.addAttribute("addressFormData", new AddressFormData());
+        model.addAttribute("cartService", cartService);
         return "order";
     }
-    @RequestMapping(value = "/order", method = RequestMethod.POST)
+    @RequestMapping(value = "/shop/order", method = RequestMethod.POST)
     public String order(@Valid @ModelAttribute("addressFormData") AddressFormData addressFormData, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
+            model.addAttribute("cartService", cartService);
             return "order";
         }
         cartService.setDeliveryInfo(
@@ -37,6 +39,6 @@ public class OrderController {
                 addressFormData.getComment());
 
         orderService.createOrder();
-        return "redirect:/orderConfirmation";
+        return "redirect:/shop/orderConfirmation";
     }
 }

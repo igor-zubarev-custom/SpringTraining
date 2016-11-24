@@ -10,11 +10,14 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class OrderJdbcTemplateDaoImpl implements OrderDao {
@@ -32,8 +35,9 @@ public class OrderJdbcTemplateDaoImpl implements OrderDao {
                 "last_name, " +
                 "delivery_address, " +
                 "contact_phone, " +
-                "comment) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "comment, " +
+                "status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -48,12 +52,62 @@ public class OrderJdbcTemplateDaoImpl implements OrderDao {
                 ps.setString(7, order.getDeliveryAddress());
                 ps.setString(8, order.getContactPhone());
                 ps.setString(9, order.getComment());
+                ps.setString(10, order.getStatus());
                 return ps;
             }
         }, keyHolder);
         Long orderId = keyHolder.getKey().longValue();
         saveOrderItems(order.getCartItems(), orderId);
         return orderId;
+    }
+
+    @Override
+    public List<Order> getOrders() {
+        String sql = "SELECT * FROM order_table";
+        List<Order> orders = new ArrayList<>();
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
+        for (Map row : rows){
+            Order order = new Order();
+            order.setId(Long.valueOf((Integer)row.get("id")));
+            order.setCartPrice(BigDecimal.valueOf((Double) row.get("cart_price")));
+            order.setTotalQuantity(Long.valueOf((Integer)row.get("total_quantity")));
+            order.setDeliveryPrice(BigDecimal.valueOf((Double) row.get("delivery_price")));
+            order.setTotalPrice(BigDecimal.valueOf((Double) row.get("total_price")));
+            order.setFirstName((String)row.get("first_name"));
+            order.setLastName((String)row.get("last_name"));
+            order.setDeliveryAddress((String)row.get("delivery_address"));
+            order.setContactPhone((String)row.get("contact_phone"));
+            order.setComment((String)row.get("comment"));
+            order.setStatus((String)row.get("status"));
+            order.setCartItems(getCartItemsForOrderId(order.getId()));
+            orders.add(order);
+        }
+
+        return orders;
+    }
+
+    @Override
+    public void updateOrder(Long orderId, String status) {
+        String sql = "UPDATE order_table SET status=? WHERE id=?";
+        jdbcTemplate.update(sql, new Object[]{status, orderId});
+    }
+
+    public List<CartItem> getCartItemsForOrderId(Long orderId){
+        String sql = "SELECT " +
+                "order_item.quantity, " +
+                "phone.* " +
+//                "phone.model " +
+//                "phone.price " +
+//                "phone.color " +
+//                "phone.display_size " +
+//                "phone.camera " +
+//                "phone.length " +
+//                "phone.width " +
+                "FROM order_item INNER JOIN phone ON order_item.phone = phone.id " +
+                "WHERE order_item.order_id = ?";
+
+        List<CartItem> cartItems = jdbcTemplate.query(sql, new Object[]{orderId}, new RowMappers.CartItemRowMapper());
+        return cartItems;
     }
 
     public void saveOrderItems(List<CartItem> orderItems, Long orderId){
