@@ -13,9 +13,13 @@
     <intercept-url pattern="/login" access="permitAll"/>
     <intercept-url pattern="/shop/**" access="hasAnyRole('USER', 'ADMIN')"/>
     <intercept-url pattern="/*" access="permitAll"/>
-    <form-login login-page="/login" authentication-failure-url="/login?error" default-target-url="/shop/products"/>
-
+    <form-login login-page="/login" authentication-failure-url="/login?error" default-target-url="/shop/products"
+                authentication-failure-handler-ref="userNameCachingAuthenticationFailureHandler"/>
   </http>
+
+  <beans:bean id="userNameCachingAuthenticationFailureHandler" class="home.zubarev.security.UserNameCachingAuthenticationFailureHandler">
+    <beans:property name="defaultFailureUrl" value="/login?error"/>
+  </beans:bean>
 
   <authentication-manager>
     <authentication-provider>

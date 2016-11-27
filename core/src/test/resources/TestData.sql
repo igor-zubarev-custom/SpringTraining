@@ -1,0 +1,1 @@
+INSERT INTO phone VALUES (1,'Samsung s6',600,'blue','1280x920','12mp',50,150),(2,'Nexus 4',450,'green','123123','31',123,412);
